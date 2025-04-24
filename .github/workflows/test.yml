@@ -1,21 +1,21 @@
-name: "integration-test"
+name: Integration test
 on:
-  pull_request:
   push:
     branches:
       - main
-      - 'releases/*'
+
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: "3.x"
     - name: Run synapse
-      uses: michaelkaye/setup-matrix-synapse@v1.0.1
+      uses: michaelkaye/setup-matrix-synapse@v1.0.5
       with: 
         uploadLogs: true
         httpPort: 8008
