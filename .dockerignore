@@ -1,0 +1,6 @@
+.github/
+synapse_s3_storage_provider.egg-info/
+venv/
+.dockerignore
+.gitignore
+Dockerfile

@@ -1,4 +1,7 @@
 include LICENSE
-include *.md
+include README.md
 
 exclude test_s3.py
+exclude .dockerignore
+exclude .gitignore
+exclude Dockerfile
