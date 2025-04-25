@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from s3_storage_provider import _stream_to_producer, _S3Responder, _ProducerStatus
+from mock import Mock
+from threading import Event, Thread
 from twisted.internet import defer
 from twisted.python.failure import Failure
 from twisted.test.proto_helpers import MemoryReactorClock
@@ -25,12 +28,6 @@ if is_py2:
     from Queue import Queue
 else:
     from queue import Queue
-
-from threading import Event, Thread
-
-from mock import Mock
-
-from s3_storage_provider import _stream_to_producer, _S3Responder, _ProducerStatus
 
 
 class StreamingProducerTestCase(unittest.TestCase):

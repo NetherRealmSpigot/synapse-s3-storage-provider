@@ -15,7 +15,7 @@ env:
   PACKAGE_NAME: synapse-s3
 
 jobs:
-  test-localhost:
+  test-matrix-localhost-minio-container:
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
@@ -67,6 +67,7 @@ jobs:
                   endpoint_url: http://127.0.0.1:9000/
                   access_key_id: ${{ env.TEST_S3_ACCESS_KEY }}
                   secret_access_key: ${{ env.TEST_S3_SECRET_KEY }}
+                  addressing_style: path
           uploadLogs: true
           artifactName: synapse-log-test-${{ github.run_id }}-${{ github.run_attempt }}
           artifactRetentionDays: 1
@@ -99,7 +100,7 @@ jobs:
           sudo rm -rf round_trip
 
   build-image:
-    needs: test-localhost
+    needs: test-matrix-localhost-minio-container
     runs-on: ubuntu-latest
     timeout-minutes: 5
 
