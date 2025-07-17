@@ -22,7 +22,6 @@ from six import string_types
 
 import boto3
 import botocore
-from botocore.client import Config as BotoClientConfig
 from botocore.config import Config
 
 from twisted.internet import defer, reactor, threads
@@ -71,10 +70,6 @@ class S3StorageProviderBackend(StorageProvider):
         self.extra_args = config["extra_args"]
         self.api_kwargs = {}
 
-        ###
-        self.s3_config = {}
-        ###
-
         if "region_name" in config:
             self.api_kwargs["region_name"] = config["region_name"]
 
@@ -92,14 +87,12 @@ class S3StorageProviderBackend(StorageProvider):
 
         self.api_kwargs["config"] = Config(
             response_checksum_validation=config.get("response_checksum_validation", "when_required"),
-            request_checksum_calculation=config.get("request_checksum_calculation", "when_required")
+            request_checksum_calculation=config.get("request_checksum_calculation", "when_required"),
+            # https://boto3.amazonaws.com/v1/documentation/api/1.9.42/guide/s3.html
+            s3={
+                "addressing_style": config.get("addressing_style", "auto")
+            }
         )
-
-        ###
-        # https://boto3.amazonaws.com/v1/documentation/api/1.9.42/guide/s3.html
-        if "addressing_style" in config:
-            self.s3_config["addressing_style"] = config["addressing_style"]
-        ###
 
         self._s3_client = None
         self._s3_client_lock = threading.Lock()
@@ -132,8 +125,7 @@ class S3StorageProviderBackend(StorageProvider):
             s3 = self._s3_client
             if not s3:
                 b3_session = boto3.session.Session()
-                self._s3_client = s3 = b3_session.client("s3", **self.api_kwargs,
-                                                         config=BotoClientConfig(s3=self.s3_config))
+                self._s3_client = s3 = b3_session.client("s3", **self.api_kwargs)
             return s3
 
     def store_file(self, path, file_info):
